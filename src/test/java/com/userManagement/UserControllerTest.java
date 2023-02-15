@@ -89,30 +89,12 @@ public class UserControllerTest {
     @Test
     void userUpdatedTest() throws Exception {
 
-        var user1=new User(
-                "tom@gmail.com",
-                "password1111",
-                "fistName",
-                "lastName",
-                "contractNumber222",
-                "tom@gmail.com",
-                "a:b:c",
-                0,
-                "null",
-                "null",
-                "active",
-                "null",
-                " null"
-
-        );
-
-
 
         doNothing().when(userManagementService).updateUser(isA(UserPost.class));
         this.mockMvc.perform(MockMvcRequestBuilders
                         .put("/api/user-management/user")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(new ObjectMapper().writeValueAsString(user1)))
+                        .content(new ObjectMapper().writeValueAsString(userPost)))
                 .andExpect(status().isOk());
     }
 

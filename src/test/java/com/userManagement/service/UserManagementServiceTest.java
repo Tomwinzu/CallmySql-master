@@ -17,6 +17,7 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.web.client.RestTemplate;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -34,13 +35,17 @@ class UserManagementServiceTest {
     @InjectMocks
 
     UserManagementService userTest = new UserManagementService();
+
+
     private User user;
+    private UserPost userPost;
 
     @BeforeEach
     void setUp() {
 
         System.out.println("Test is starting");
         MockitoAnnotations.openMocks(this);
+
     }
 
     @AfterEach
@@ -53,18 +58,31 @@ class UserManagementServiceTest {
     @Test
     void addUserTest() {
 
-        List<String> mocklist = mock(List.class);
-        mocklist.size();
-        mocklist.add("tom");
-        verify(mocklist, times(1)).size();
-        verify(mocklist, atMost(2)).size();
-        verify(mocklist, atLeastOnce()).size();
-        verify(mocklist, atLeast(1)).size();
-        verify(mocklist).add("tom");
-        verify(mocklist).add(anyString());
+
+        var dbUserList = new ArrayList<User>();
+        var user1 = new User(
+                "tom@gmail.com",
+                "password",
+                "fistName",
+                "lastName",
+                "contractNumber",
+                "tom@gmail.com",
+                "a:b:c",
+                2,
+                "gender",
+                "nationality",
+                "active",
+                "date",
+                "date");
+
+        dbUserList.add(user1);
+        Mockito.when(userTest.user.getAge()).thenReturn(user1.getAge());
+        Mockito.when(userTest.)
 
 
     }
+
+
 
     @Test
     void dateTest() {
@@ -151,8 +169,6 @@ class UserManagementServiceTest {
         user1.setContactNumber("1234567890");
         user1.setTags("a:b:c");
 
-
-        when(userRepository.save(user1)).thenReturn(user1);
 
         assertEquals("test@email.com", user1.getEmail());
         assertEquals("password", user1.getPassword());
