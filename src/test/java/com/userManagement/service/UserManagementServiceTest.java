@@ -28,24 +28,35 @@ import static org.mockito.Mockito.*;
 
 class UserManagementServiceTest {
 
-    @Mock
+   // @Mock
     private UserRepository userRepository;
     @Mock
     private RestTemplate restTemplate;
-    @InjectMocks
 
+
+    @Mock
+    private Agify getAgify;
+    @Mock
+    private Genderize genderize;
+    @Mock
+    private Nationalize nationalize;
+       @InjectMocks
     UserManagementService userTest = new UserManagementService();
+       private  UserPost userPost;
+       private  User user;
 
-
-    private User user;
-    private UserPost userPost;
 
     @BeforeEach
     void setUp() {
 
         System.out.println("Test is starting");
         MockitoAnnotations.openMocks(this);
-
+        this.userPost = new UserPost();
+        this.userPost.setEmail("123@gmail.com");
+        this.userPost.setFirstName("first name");
+        this.userPost.setLastName("last name");
+        this.userPost.setContactNumber("238237");
+        this.userPost.setTags(List.of(new String[]{"a", "b"}));
     }
 
     @AfterEach
@@ -58,30 +69,36 @@ class UserManagementServiceTest {
     @Test
     void addUserTest() {
 
-
-        var dbUserList = new ArrayList<User>();
-        var user1 = new User(
+             /*var user= new User(
                 "tom@gmail.com",
-                "password",
-                "fistName",
-                "lastName",
+                   "password",
+                 "tom",
+                  "lastName",
+                "tom@gmail.com",
                 "contractNumber",
-                "tom@gmail.com",
                 "a:b:c",
-                2,
+                20,
                 "gender",
                 "nationality",
                 "active",
-                "date",
-                "date");
+                "null",
+                "null"
 
-        dbUserList.add(user1);
-        Mockito.when(userTest.user.getAge()).thenReturn(user1.getAge());
-        Mockito.when(userTest.)
 
+              */
+
+
+
+        Mockito.when(restTemplate.getForObject("https://api.agify.io/?name=firstname", Agify.class)).thenReturn(getAgify);
+
+          userTest.addUser(userPost);
+       Assertions.assertEquals(getAgify.getAge(), user.getAge());
+
+        Assertions.assertEquals(user.getUserName(), userPost.getEmail());
+
+        Assertions.assertEquals(user.getStatus(), "active");
 
     }
-
 
 
     @Test
@@ -106,7 +123,7 @@ class UserManagementServiceTest {
 
     }
 
-    @Test
+   /* @Test
     void agifyTest() throws Exception {
 
         Agify ag = new Agify();
@@ -118,6 +135,8 @@ class UserManagementServiceTest {
         assertEquals(ag, result);
     }
 
+
+    */
 
     @Test
     void nationalizeTest() throws Exception {

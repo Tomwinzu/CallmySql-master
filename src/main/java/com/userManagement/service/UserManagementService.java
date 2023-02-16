@@ -50,7 +50,7 @@ public class UserManagementService {
 
     }
 
-    private Agify getAgify(String firstName) {
+private  Agify getAgify(String firstName) {
         String url = "https://api.agify.io/?name=" + firstName;
         Agify getAgify = restTemplate.getForObject(url, Agify.class);
         return getAgify;
