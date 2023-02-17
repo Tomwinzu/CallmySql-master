@@ -30,6 +30,7 @@ public class UserManagementService {
 
         String tags = userPost.getTags().stream().collect(Collectors.joining(":"));
 
+
         user.setUserName(userPost.getEmail());
         user.setPassword(userPost.getPassword());
         user.setFirstName(userPost.getFirstName());
@@ -43,9 +44,8 @@ public class UserManagementService {
         user.setStatus("active");
         user.setCreated(date());
         user.setUpdated(date());
-
-
         userRepository.save(user);
+
 
 
     }
@@ -92,9 +92,9 @@ private  Agify getAgify(String firstName) {
 
 
             user.setUserName(userpost.getEmail());
-            user.setAge(getAgify(user.getFirstName()).getAge());
-            user.setGender(getGenderize(user.getFirstName()).getGender());
-            user.setNationality(getNationalize(user.getFirstName()).getCountry().get(0).getCountry_id());
+            user.setAge(getAgify(userpost.getFirstName()).getAge());
+            user.setGender(getGenderize(userpost.getFirstName()).getGender());
+            user.setNationality(getNationalize(userpost.getFirstName()).getCountry().get(0).getCountry_id());
             user.setUpdated(date());
             user.setPassword(userpost.getPassword());
             user.setCreated(date());

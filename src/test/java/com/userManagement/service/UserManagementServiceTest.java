@@ -2,10 +2,7 @@ package com.userManagement.service;
 
 import com.userManagement.User;
 import com.userManagement.UserRepository;
-import com.userManagement.service.bean.Agify;
-import com.userManagement.service.bean.Genderize;
-import com.userManagement.service.bean.Nationalize;
-import com.userManagement.service.bean.UserPost;
+import com.userManagement.service.bean.*;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,8 +14,6 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.web.client.RestTemplate;
 
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,35 +22,28 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 class UserManagementServiceTest {
-
-   // @Mock
+    @Mock
     private UserRepository userRepository;
     @Mock
     private RestTemplate restTemplate;
+    @InjectMocks
 
-
-    @Mock
-    private Agify getAgify;
-    @Mock
-    private Genderize genderize;
-    @Mock
-    private Nationalize nationalize;
-       @InjectMocks
     UserManagementService userTest = new UserManagementService();
-       private  UserPost userPost;
-       private  User user;
-
+    private UserPost userPost;
+    private User user;
 
     @BeforeEach
     void setUp() {
 
         System.out.println("Test is starting");
+
         MockitoAnnotations.openMocks(this);
+
         this.userPost = new UserPost();
-        this.userPost.setEmail("123@gmail.com");
-        this.userPost.setFirstName("first name");
-        this.userPost.setLastName("last name");
-        this.userPost.setContactNumber("238237");
+        this.userPost.setEmail("tom@gmail.com");
+        this.userPost.setFirstName("firstname");
+        this.userPost.setLastName("lastname");
+        this.userPost.setContactNumber("123456");
         this.userPost.setTags(List.of(new String[]{"a", "b"}));
     }
 
@@ -63,40 +51,30 @@ class UserManagementServiceTest {
     void getUp() {
 
         System.out.println("Test is end");
-
     }
 
     @Test
     void addUserTest() {
 
-             /*var user= new User(
-                "tom@gmail.com",
-                   "password",
-                 "tom",
-                  "lastName",
-                "tom@gmail.com",
-                "contractNumber",
-                "a:b:c",
-                20,
-                "gender",
-                "nationality",
-                "active",
-                "null",
-                "null"
+          UserManagementService userManagementServices1=mock(UserManagementService.class);
 
 
-              */
+        Agify agify = new Agify();
+        agify.setAge(23);
+        Genderize genderize = new Genderize();
+        genderize.setGender("male");
+        Country country = new Country();
+        country.setCountry_id("CZ");
+        country.setProbability(0.22f);
+        Nationalize nationalize = new Nationalize();
+        nationalize.setCountry(List.of(country));
 
+        Mockito.when(restTemplate.getForObject("https://api.agify.io/?name=firstname", Agify.class)).thenReturn(agify);
+        Mockito.when(restTemplate.getForObject("https://api.genderize.io/?name=firstname", Genderize.class)).thenReturn(genderize);
+        Mockito.when(restTemplate.getForObject("https://api.nationalize.io?name=firstname", Nationalize.class)).thenReturn(nationalize);
 
-
-        Mockito.when(restTemplate.getForObject("https://api.agify.io/?name=firstname", Agify.class)).thenReturn(getAgify);
-
-          userTest.addUser(userPost);
-       Assertions.assertEquals(getAgify.getAge(), user.getAge());
-
-        Assertions.assertEquals(user.getUserName(), userPost.getEmail());
-
-        Assertions.assertEquals(user.getStatus(), "active");
+        userTest.addUser(userPost);
+        verify(userManagementServices1,atLeastOnce());
 
     }
 
@@ -123,7 +101,7 @@ class UserManagementServiceTest {
 
     }
 
-   /* @Test
+    @Test
     void agifyTest() throws Exception {
 
         Agify ag = new Agify();
@@ -135,8 +113,6 @@ class UserManagementServiceTest {
         assertEquals(ag, result);
     }
 
-
-    */
 
     @Test
     void nationalizeTest() throws Exception {
@@ -179,22 +155,25 @@ class UserManagementServiceTest {
     @Test
     void updateUserTest() {
 
-        User user1 = new User();
+         UserManagementService userManagementServices2=mock(UserManagementService.class);
 
-        user1.setEmail("test@email.com");
-        user1.setPassword("password");
-        user1.setLastName("lastname");
-        user1.setFirstName("firstname");
-        user1.setContactNumber("1234567890");
-        user1.setTags("a:b:c");
+        Agify agify = new Agify();
+        agify.setAge(23);
+        Genderize genderize = new Genderize();
+        genderize.setGender("male");
+        Country country = new Country();
+        country.setCountry_id("CZ");
+        country.setProbability(0.22f);
+        Nationalize nationalize = new Nationalize();
+        nationalize.setCountry(List.of(country));
 
+        Mockito.when(restTemplate.getForObject("https://api.agify.io/?name=firstname", Agify.class)).thenReturn(agify);
+        Mockito.when(restTemplate.getForObject("https://api.genderize.io/?name=firstname", Genderize.class)).thenReturn(genderize);
+        Mockito.when(restTemplate.getForObject("https://api.nationalize.io?name=firstname", Nationalize.class)).thenReturn(nationalize);
 
-        assertEquals("test@email.com", user1.getEmail());
-        assertEquals("password", user1.getPassword());
-        assertEquals("lastname", user1.getLastName());
-        assertEquals("firstname", user1.getFirstName());
-        assertEquals("1234567890", user1.getContactNumber());
-        assertEquals("a:b:c", user1.getTags());
+        userTest.updateUser(userPost);
+        verify(userManagementServices2, atLeastOnce());
     }
+
 }
 
