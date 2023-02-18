@@ -26,11 +26,14 @@ class UserManagementServiceTest {
     private UserRepository userRepository;
     @Mock
     private RestTemplate restTemplate;
+
+
     @InjectMocks
 
     UserManagementService userTest = new UserManagementService();
     private UserPost userPost;
     private User user;
+
 
     @BeforeEach
     void setUp() {
@@ -39,25 +42,41 @@ class UserManagementServiceTest {
 
         MockitoAnnotations.openMocks(this);
 
+
         this.userPost = new UserPost();
         this.userPost.setEmail("tom@gmail.com");
         this.userPost.setFirstName("firstname");
         this.userPost.setLastName("lastname");
         this.userPost.setContactNumber("123456");
         this.userPost.setTags(List.of(new String[]{"a", "b"}));
+
+
     }
 
     @AfterEach
     void getUp() {
-
+        Mockito.reset(restTemplate);
+        Mockito.reset(userRepository);
         System.out.println("Test is end");
     }
 
     @Test
     void addUserTest() {
 
-          UserManagementService userManagementServices1=mock(UserManagementService.class);
-
+        User user = new User(
+                "tom@gmail.com",
+                "password",
+                "firstname",
+                "lastname",
+                "123456",
+                "a", "b",
+                23,
+                "male",
+                "CZ",
+                "active",
+                "null",
+                "null"
+        );
 
         Agify agify = new Agify();
         agify.setAge(23);
@@ -72,10 +91,11 @@ class UserManagementServiceTest {
         Mockito.when(restTemplate.getForObject("https://api.agify.io/?name=firstname", Agify.class)).thenReturn(agify);
         Mockito.when(restTemplate.getForObject("https://api.genderize.io/?name=firstname", Genderize.class)).thenReturn(genderize);
         Mockito.when(restTemplate.getForObject("https://api.nationalize.io?name=firstname", Nationalize.class)).thenReturn(nationalize);
-
+      Mockito.when(userRepository.save(user)).thenReturn(user);
         userTest.addUser(userPost);
-        verify(userManagementServices1,atLeastOnce());
-
+       userRepository.save(user);
+        verify(restTemplate, atLeastOnce()).getForObject("https://api.agify.io/?name=firstname", Agify.class);
+       verify(userRepository, times(1)).save(user);
     }
 
 
@@ -155,7 +175,20 @@ class UserManagementServiceTest {
     @Test
     void updateUserTest() {
 
-         UserManagementService userManagementServices2=mock(UserManagementService.class);
+        User user = new User(
+                "tom@gmail.com",
+                "password",
+                "firstname",
+                "lastname",
+                "123456",
+                "a", "b",
+                23,
+                "male",
+                "CZ",
+                "active",
+                "null",
+                "null"
+        );
 
         Agify agify = new Agify();
         agify.setAge(23);
@@ -167,13 +200,17 @@ class UserManagementServiceTest {
         Nationalize nationalize = new Nationalize();
         nationalize.setCountry(List.of(country));
 
+        when(userRepository.findById(user.getEmail())).thenReturn(Optional.of(user));
         Mockito.when(restTemplate.getForObject("https://api.agify.io/?name=firstname", Agify.class)).thenReturn(agify);
         Mockito.when(restTemplate.getForObject("https://api.genderize.io/?name=firstname", Genderize.class)).thenReturn(genderize);
         Mockito.when(restTemplate.getForObject("https://api.nationalize.io?name=firstname", Nationalize.class)).thenReturn(nationalize);
+       Mockito.when(userRepository.save(user)).thenReturn(user);
 
         userTest.updateUser(userPost);
-        verify(userManagementServices2, atLeastOnce());
-    }
+       userRepository.save(user);
 
+        verify(restTemplate, atLeastOnce()).getForObject("https://api.agify.io/?name=firstname", Agify.class);
+        verify(userRepository, times(1)).save(user);
+    }
 }
 

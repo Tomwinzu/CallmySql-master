@@ -47,10 +47,9 @@ public class UserManagementService {
         userRepository.save(user);
 
 
-
     }
 
-private  Agify getAgify(String firstName) {
+    private Agify getAgify(String firstName) {
         String url = "https://api.agify.io/?name=" + firstName;
         Agify getAgify = restTemplate.getForObject(url, Agify.class);
         return getAgify;
@@ -82,29 +81,28 @@ private  Agify getAgify(String firstName) {
     public void deleteUserByUserName(String userName) {
         if (userRepository.findById(userName).isPresent())
             userRepository.deleteById(userName);
-        }
+    }
 
 
-    public void updateUser(@RequestBody  UserPost userpost) {
+    public void updateUser(@RequestBody UserPost userpost) {
 
         String tags = userpost.getTags().stream().collect(Collectors.joining(":"));
 
 
-
-            user.setUserName(userpost.getEmail());
-            user.setAge(getAgify(userpost.getFirstName()).getAge());
-            user.setGender(getGenderize(userpost.getFirstName()).getGender());
-            user.setNationality(getNationalize(userpost.getFirstName()).getCountry().get(0).getCountry_id());
-            user.setUpdated(date());
-            user.setPassword(userpost.getPassword());
-            user.setCreated(date());
-            user.setLastName(userpost.getLastName());
-            user.setFirstName(userpost.getFirstName());
-            user.setTags(tags);
-            user.setStatus("active");
-            user.setContactNumber(userpost.getContactNumber());
-            user.setEmail(userpost.getEmail());
-            userRepository.save(user);
+        user.setUserName(userpost.getEmail());
+        user.setPassword(userpost.getPassword());
+        user.setFirstName(userpost.getFirstName());
+        user.setLastName(userpost.getLastName());
+        user.setContactNumber(userpost.getContactNumber());
+        user.setEmail(userpost.getEmail());
+        user.setAge(getAgify(userpost.getFirstName()).getAge());
+        user.setGender(getGenderize(userpost.getFirstName()).getGender());
+        user.setNationality(getNationalize(userpost.getFirstName()).getCountry().get(0).getCountry_id());
+        user.setTags(tags);
+        user.setStatus("active");
+        user.setUpdated(date());
+        user.setCreated(date());
+        userRepository.save(user);
 
     }
 
